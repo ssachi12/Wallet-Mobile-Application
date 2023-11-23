@@ -1,14 +1,6 @@
 <SignInScreen>:
     Screen:
         BoxLayout:
-            MDIcon:
-                icon:"arrow_left"
-
-                pos_hint:{'top': .75}
-
-
-        BoxLayout:
-
             orientation: 'vertical'
             padding: dp(10)
             spacing: dp(10)
@@ -17,7 +9,6 @@
             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
             size_hint_x:None
             width:300
-
 
             MDTextField:
                 id: input_text
@@ -46,3 +37,15 @@
                 size_hint_x: None
                 width: "150dp"
                 pos_hint: {'center_x': 0.5}
+
+
+        MDRectangleFlatButton:
+            text: "Back"
+            on_release: root.go_back()
+            size_hint_x: None
+            height: "60dp"
+            width: "60dp"
+            pos_hint: {'center_x':0.8, 'center_y': 0.1}
+            theme_text_color: "Custom"
+            text_color: 1, 1, 1, 1
+            md_bg_color: 0, 0, 0, 1
