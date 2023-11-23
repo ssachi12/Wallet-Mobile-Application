@@ -1,6 +1,14 @@
 <SignInScreen>:
     Screen:
         BoxLayout:
+            MDIcon:
+                icon:"arrow_left"
+
+                pos_hint:{'top': .75}
+
+
+        BoxLayout:
+
             orientation: 'vertical'
             padding: dp(10)
             spacing: dp(10)
@@ -9,6 +17,7 @@
             pos_hint: {'center_x': 0.5, 'center_y': 0.5}
             size_hint_x:None
             width:300
+
 
             MDTextField:
                 id: input_text

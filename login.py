@@ -7,7 +7,7 @@ from kivymd.uix.label import MDLabel
 from kivy.core.window import Window
 from kivy.metrics import dp
 
-Window.size = (300, 500)
+# Window.size = (300, 500)
 
 Builder.load_string(
     """
@@ -58,10 +58,12 @@ Builder.load_string(
 
             MDRaisedButton:
                 text: 'Sign Up'
-                on_press: root.manager.current = 'signup'
+                on_release: root.manager.current = 'signup'
                 size_hint: (0.5, 1)
                 width: dp(50)
                 pos_hint: {'center_x': 0.5, 'y': 0.7}  # Adjust the value as needed
+                
+                
 
         BoxLayout:
             orientation: 'horizontal'
@@ -129,6 +131,8 @@ class SignUpPage(Screen):
 class LoginScreen(Screen):
     def go_to_signin(self):
         self.manager.current = 'signin'
+    def go_to_signup(self):
+        self.manager.current='signup'
 
 
 class WalletApp(MDApp):
