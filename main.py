@@ -5,8 +5,12 @@ from kivymd.app import MDApp
 from login import LoginScreen
 from signin import SignInScreen
 from signup import SignUpScreen
+from dashboard import DashBoardScreen
 from kivymd.uix.snackbar import Snackbar
 import re
+import sqlite3
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.button import MDFlatButton
 
 Builder.load_string(
     """
@@ -19,15 +23,22 @@ Builder.load_string(
         manager: root
     SignUpScreen:
         name: 'signup'
-        manager: root    
-        
+        manager: root
+    DashBoardScreen:
+        name: 'dashboard'
+        manager: root
     """
 )
 
+
 class ScreenManagement(ScreenManager):
+    def dismiss_and_navigate(self):
+
+        self.current = 'signin'  # Navigate to the desired screen
+
+    # signup codes ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     def signup(self):
         current_screen = self.current_screen
-
         gmail = current_screen.ids.gmail.text
         username = current_screen.ids.username.text
         password = current_screen.ids.password.text
@@ -36,8 +47,51 @@ class ScreenManagement(ScreenManager):
         pan_card = current_screen.ids.pan_card.text
         address = current_screen.ids.address.text
 
+        try:
+            # Database Connection
+            conn = sqlite3.connect('wallet_app.db')
+            cursor = conn.cursor()
+            # Inserting data into DataSbase
+            sql = ('INSERT INTO login(gmail,username,password,phone,adhaar,pan,address) VALUES (?,?,?,?,?,?,?);')
+            mydata = (gmail, username, password, phone_no, aadhar_card, pan_card, address)
+            cursor.execute(sql, mydata)
+            # cheking for duplicate values
+            # Check for duplicate usernames and phones
+            cursor.execute('''
+                SELECT gmail, username, COUNT(*)
+                FROM login
+                GROUP BY gmail,username
+                HAVING COUNT(*) > 1
+            ''')
 
-        if not gmail or not username or not password or not phone_no or not aadhar_card or not pan_card or not address:
+            duplicate_records = cursor.fetchall()
+            # navigating to the sign in screen if all requirements are correct=========================================
+            if duplicate_records:
+                Snackbar(text="Username/Gmail Already exists").open()
+                for gmail, username, count in duplicate_records:
+                    print(f"Username: {username}, gmail: {gmail} - Count: {count}")
+            else:
+                print("No duplicate records found.")
+                # Show a popup with a message
+                dialog = MDDialog(
+                    title="Alert",
+                    text="Successfully signed up.",
+                    buttons=[
+                        MDFlatButton(
+                            text="OK",
+                            on_release=lambda *args: (dialog.dismiss(), self.dismiss_and_navigate())
+                        )
+                    ]
+                )
+                dialog.open()
+        except Exception as e:
+            print(e)
+        conn.commit()
+        conn.close()
+
+        if (not gmail or not username
+                or not password or not phone_no
+                or not aadhar_card or not pan_card or not address):
             Snackbar(text="All fields are mandatory. Please fill in all the required fields.").open()
             return
 
@@ -73,33 +127,62 @@ class ScreenManagement(ScreenManager):
         return False
 
     def is_valid_pan(self, pan):
-        if len(pan) == 10 and pan[:5].isalpha() and pan[5:9].isdigit() and pan[9].isalpha():
+        if len(pan) == 10 or len(pan) == 11 and pan[:5].isalpha() and pan[5:9].isdigit() and pan[9:10].isdigit() or pan[
+                                                                                                                    9:12].isalpha():
             return True
         return False
+
+    # ...
+
+    global usr_input
     def sign_in(self, input_text, password):
-        # Define regular expressions for valid input
-        mobile_regex = r"^\d{10}$"
-        user_id_regex = r"^\w+$"
-        email_regex = r"^\w+@\w+\.\w{2,4}$"
+        global usr_input
+        usr_input=input_text
 
-        # Check if input is a mobile number
-        if re.match(mobile_regex, input_text):
-            print(f"Signing in using mobile number: {input_text}")
-            # Call sign-in function for mobile number
-
-        # Check if input is a user ID
-        elif re.match(user_id_regex, input_text):
-            print(f"Signing in using user ID: {input_text}")
-            # Call sign-in function for user ID
-
-        # Check if input is an email ID
-        elif re.match(email_regex, input_text):
-            print(f"Signing in using email ID: {input_text}")
-            # Call sign-in function for email ID
-
-        # Invalid input
+        if input_text == '' or password == '':
+            # Show popup for required fields
+            self.show_popup("All Fields are Required")
         else:
-            print("Invalid input. Please enter a valid mobile number, user ID, or email ID")
+            try:
+                conn = sqlite3.connect('wallet_app.db')
+                cursor = conn.cursor()
+            except:
+                # Show popup for connection error
+                self.show_popup("Something Went Wrong")
+                return
+
+            sql = "SELECT * FROM login WHERE (username=? or phone=? or gmail=?) AND password=?"
+            data = (input_text, input_text, input_text, password)
+            cursor.execute(sql, data)
+            row = cursor.fetchone()
+
+            if row is None:
+                # Show popup for invalid user
+                self.show_popup("Invalid User")
+            else:
+                # Show popup for successful login
+                self.show_popup("Login Successful")
+                # self.fetch_user_data()
+
+
+                self.current = 'dashboard'
+
+
+            conn.commit()
+            conn.close()
+    def show_popup(self, text):
+        dialog = MDDialog(
+            title="Alert",
+            text=text,
+            buttons=[
+                MDFlatButton(
+                    text="OK",
+                    on_release=lambda *args: dialog.dismiss()
+                    # pos_hint = {"center_x": 0.5, "center_y": 0.5}
+                )
+            ]
+        )
+        dialog.open()
 
 
 class WalletApp(MDApp):
