@@ -2,7 +2,7 @@ from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.boxlayout import BoxLayout
 from kivymd.app import MDApp
-from kivymd.uix.button import MDRaisedButton, MDIconButton
+from kivymd.uix.button import MDRaisedButton, MDIconButton,MDRectangleFlatButton
 from kivymd.uix.label import MDLabel
 from kivy.core.window import Window
 from kivy.metrics import dp
@@ -49,19 +49,25 @@ Builder.load_string(
             spacing: dp(10)
             pos_hint: {'center_x': 0.5}
 
-            MDRaisedButton:
+            MDRectangleFlatButton:
                 text: 'Sign In'
                 on_release: root.manager.current = 'signin'
                 size_hint: (0.5, 1)
                 width: dp(50)
                 pos_hint: {'center_x': 0.5, 'y': 0.7}  # Adjust the value as needed
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                md_bg_color: 0, 193/255, 245/255, 1
 
-            MDRaisedButton:
+            MDRectangleFlatButton:
                 text: 'Sign Up'
                 on_press: root.manager.current = 'signup'
                 size_hint: (0.5, 1)
                 width: dp(50)
                 pos_hint: {'center_x': 0.5, 'y': 0.7}  # Adjust the value as needed
+                theme_text_color: "Custom"
+                text_color: 1, 1, 1, 1
+                md_bg_color: 0, 193/255, 245/255, 1
 
         BoxLayout:
             orientation: 'horizontal'
@@ -121,9 +127,6 @@ Builder.load_string(
 
 
 
-
-class SignUpPage(Screen):
-    pass
 
 
 class LoginScreen(Screen):
