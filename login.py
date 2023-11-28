@@ -90,6 +90,7 @@ Builder.load_string(
                     font_size: '16sp'
                     bold: True
                     pos_hint:{'center_x': 0.6}
+                    
 
             BoxLayout:
                 orientation: 'vertical'
@@ -106,15 +107,19 @@ Builder.load_string(
                     font_size: '16sp'
                     bold: True
                     pos_hint:{'center_x': 0.7}
+                    
 
             BoxLayout:
                 orientation: 'vertical'
                 spacing: dp(5)
                 pos_hint: {'center_x': 0.7}
+                
 
                 MDIconButton:
                     icon: 'credit-card'
                     pos_hint:{'center_x': 0.55}
+                    
+                    
 
                 MDLabel:
                     text: 'Easy'
@@ -122,6 +127,8 @@ Builder.load_string(
                     font_size: '16sp'
                     bold: True
                     pos_hint:{'center_x': 0.85}
+                    
+                    
 """
 )
 

@@ -1,4 +1,5 @@
 from kivy.properties import ListProperty, StringProperty
+from kivy.uix.floatlayout import FloatLayout
 from kivymd.app import MDApp
 from kivy.lang.builder import Builder
 from kivymd.theming import ThemableBehavior
@@ -20,12 +21,35 @@ navigation_helper = """
         MDNavigationLayout:
             MDScreenManager:
                 MDScreen:
+                    BottomAppBar:
+                        MDBottomNavigation:
+                            spacing:dp(10)
+                            panel_color:get_color_from_hex("#3489eb")
+                            text_color_active:get_color_from_hex("F5F5F5")
+                            MDBottomNavigationItem:
+                                name:"Withdraw"
+                                text:'Withdraw'
+                                font_size: '20sp'
+                                icon:'bank-transfer-out'
+                                on_tab_release:print("Withdraw")
+                            MDBottomNavigationItem:
+                                name:"Withdraw"
+                                text:'Transfer'
+                                text_size: dp(1)
+                                icon:'bank-transfer-in'
+                                on_tab_release:print("Transfer")
+                            MDBottomNavigationItem:
+                                name:"Withdraw"
+                                text:'Add Money'
+                                text_size:dp(8)
+                                icon:'wallet-plus'
+                                on_tab_release:print("Add money")
                     MDTopAppBar:
                         title: "G-Wallet"
                         elevation: 4
                         pos_hint: {"top": 1}
-                        # md_bg_color: "#e7e4c0"
-                        specific_text_color: "#4a4939"
+                        md_bg_color: "#3489eb"
+                        specific_text_color: "F5F5F5"
                         left_action_items:
                             [['menu', lambda x: nav_drawer.set_state("open")]]
 
@@ -64,7 +88,7 @@ navigation_helper = """
 
                                 MDLabel:
                                     text: 'Recharge Prepaid Mobile'
-                                    align: 'center'
+                                    halign: 'center'
                                     font_size: '10sp'
 
                             # Icon and label for pay electricity bill
@@ -83,7 +107,7 @@ navigation_helper = """
 
                                 MDLabel:
                                     text: 'Pay Electricity Bill'
-                                    align: 'center'
+                                    halign: 'center'
                                     font_size: '10sp'
 
                             # Icon and label for recharge DTH connection
@@ -102,7 +126,7 @@ navigation_helper = """
 
                                 MDLabel:
                                     text: 'Recharge DTH Connection'
-                                    align: 'center'
+                                    halign: 'center'
                                     font_size: '10sp'
 
                             # Icon and label for book gas cylinder
@@ -121,7 +145,7 @@ navigation_helper = """
 
                                 MDLabel:
                                     text: 'Book Gas Cylinder'
-                                    align: 'center'
+                                    halign: 'center'
                                     font_size: '10sp'
 
                              # Icon and label for pay broadband & landline bill
@@ -139,7 +163,7 @@ navigation_helper = """
 
                                 MDLabel:
                                     text:  'Broadband & Landline Bill'
-                                    align: 'center'
+                                    halign: 'center'
                                     font_size: '10sp'
 
                             # Icon and label for pay education fee
@@ -157,7 +181,7 @@ navigation_helper = """
 
                                 MDLabel:
                                     text: 'Pay Education Fee'
-                                    align: 'center'
+                                    halign: 'center'
                                     font_size: '10sp'        
 
 
@@ -179,7 +203,7 @@ navigation_helper = """
 
                                 MDLabel:
                                     text: 'Movies Tickets'
-                                    align: 'center'
+                                    halign: 'center'
                                     font_size: '10sp'
 
                             # Icon and label for Flight Tickets
@@ -197,7 +221,7 @@ navigation_helper = """
 
                                 MDLabel:
                                     text: 'Flight Tickets'
-                                    align: 'center'
+                                    halign: 'center'
                                     font_size: '10sp'
 
                             # Icon and label for Bus Tickets
@@ -215,7 +239,7 @@ navigation_helper = """
 
                                 MDLabel:
                                     text: 'Bus Tickets'
-                                    align: 'center'
+                                    halign: 'center'
                                     font_size: '10sp'
 
                             # Icon and label for Train Tickets
@@ -233,7 +257,7 @@ navigation_helper = """
 
                                 MDLabel:
                                     text: 'Train Tickets'
-                                    align: 'center'
+                                    halign: 'center'
                                     font_size: '10sp'
 
                             # Icon and label for Buy Insurance
@@ -251,7 +275,7 @@ navigation_helper = """
 
                                 MDLabel:
                                     text: 'Buy Insurance'
-                                    align: 'center'
+                                    halign: 'center'
                                     font_size: '10sp'
 
                             # Icon and label for International Flights
@@ -269,7 +293,7 @@ navigation_helper = """
 
                                 MDLabel:
                                     text: 'International Flights'
-                                    align: 'center'
+                                    halign: 'center'
                                     font_size: '10sp'
 
 
@@ -364,7 +388,8 @@ navigation_helper = """
 
 """
 Builder.load_string(navigation_helper)
-
+class BottomAppBar(FloatLayout):
+    pass
 
 class ContentNavigationDrawer(MDBoxLayout):
     pass
