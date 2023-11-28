@@ -6,6 +6,7 @@ from login import LoginScreen
 from signin import SignInScreen
 from signup import SignUpScreen
 from dashboard import DashBoardScreen
+from user import Profile
 from kivymd.uix.snackbar import Snackbar
 import re
 import sqlite3
@@ -27,11 +28,17 @@ Builder.load_string(
     DashBoardScreen:
         name: 'dashboard'
         manager: root
+
+    Profile:
+        name:'profile'
+        manage: root    
     """
 )
 
 
 class ScreenManagement(ScreenManager):
+    current_user_data = None  # Class attribute to store the current user data
+
     def dismiss_and_navigate(self):
 
         self.current = 'signin'  # Navigate to the desired screen
@@ -133,11 +140,9 @@ class ScreenManagement(ScreenManager):
         return False
 
     # ...
-
-    global usr_input
+    # signin++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     def sign_in(self, input_text, password):
-        global usr_input
-        usr_input=input_text
+        # ... (rest of your code)
 
         if input_text == '' or password == '':
             # Show popup for required fields
@@ -160,16 +165,50 @@ class ScreenManagement(ScreenManager):
                 # Show popup for invalid user
                 self.show_popup("Invalid User")
             else:
+
+                self.fetch_and_update_dashboard(row)
                 # Show popup for successful login
                 self.show_popup("Login Successful")
-                # self.fetch_user_data()
-
-
                 self.current = 'dashboard'
-
 
             conn.commit()
             conn.close()
+
+    def fetch_and_update_dashboard(self, user_data):
+        # Assuming user_data is a tuple containing user information (username, email, balance, etc.)
+        gmail, username, password, phone, adhaar, pan, address, _, _ = user_data
+
+        # Update class attribute with current user data
+        ScreenManagement.current_user_data = user_data
+
+        # Update labels in DashBoardScreen
+        dashboard_screen = self.get_screen('dashboard')
+        dashboard_screen.ids.username_label.text = username
+        dashboard_screen.ids.email_label.text = gmail
+
+    def profile_view(self):
+        # Check if the user is logged in
+        if ScreenManagement.current_user_data:
+            # Retrieve the current user data
+            current_user_data = ScreenManagement.current_user_data
+
+            # Create a new ProfileScreen instance
+            profile_screen = self.get_screen('profile')
+            print(current_user_data)
+
+            # Update the profile view with the user data
+            profile_screen.ids.username_label.text = f"Username: {current_user_data[1]}"  # Assuming username is at index 1
+            profile_screen.ids.email_label.text = f"Email: {current_user_data[0]}"  # Assuming email is at index 0
+            profile_screen.ids.contact_label.text = f"Mobile No: {current_user_data[3]}"
+            profile_screen.ids.aadhaar_label.text = f"Aadhar: {current_user_data[4]}"
+            profile_screen.ids.pan_label.text = f"Pan no: {current_user_data[5]}"
+            profile_screen.ids.address_label.text = f"Address: {current_user_data[6]}"
+            # Navigate to the 'Profile' screen
+            self.current = 'profile'
+        else:
+            # Show a message indicating that the user is not logged in
+            self.show_popup("Please log in to view the profile.")
+
     def show_popup(self, text):
         dialog = MDDialog(
             title="Alert",

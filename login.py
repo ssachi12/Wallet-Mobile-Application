@@ -128,9 +128,6 @@ Builder.load_string(
 
 
 
-class SignUpPage(Screen):
-    pass
-
 
 class LoginScreen(Screen):
     def go_to_signin(self):
